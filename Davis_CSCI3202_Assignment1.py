@@ -5,6 +5,7 @@
 
 
 import queue
+import random
 
 #Queue
 #First in, first out
@@ -36,8 +37,6 @@ class stack():
         self.items.append(value)
 
     def stackPop(self):
-        #for k in len(self.items):
-            #print("Popping item", k)
         return self.items.pop()
 
     def checkSize(self):
@@ -52,12 +51,6 @@ class treeNode():
         self.leftChild = None
         self.rightChild = None
         self.parent = None
-
-'''
-in order to make an Austin node we would do this
-Austin = treeNode(20)
-print(Austin.integerKey)
-'''
 
 class binaryTree():
 
@@ -101,78 +94,39 @@ class binaryTree():
 
     def deleteNode(self, value):
 
-        #Attempt 3
-        '''
-        nodeExists = False
+        nodeExists = True
+        hasChildren = False
 
-        for zoomba in self.nodeList:
-            #Check if node has value we're looking for
-            if zoomba.integerKey == value:
-                nodeExists = True
-                #Check if node has any children
-                if zoomba.leftChild is not None: #or zoomba.rightChild is not None:
-                    print("Node not deleted, has children")
-                #Parent doesn't have children, delete it
-                elif zoomba.leftChild is None:
-                    print("This node has a no children - time to KILL IT")
-                    print(value)
-                    for parentzoomba in self.nodeList:
-                        #I think it's getting hung up here because some nodes don't have a leftChild value
-                        print(parentzoomba.leftChild.integerKey)
-                        #if parentzoomba.leftChild.integerKey == value:
-                         #   print("This node has a left child who we need to remove")
-
-
-        if nodeExists == False:
-            print("Node not found")
-        '''
-
-
-        #Attempt 2
-        '''
-        #Check if node exists
-        nodeExists = False
-
-        for node in self.nodeList:
+        #Create a copy of the list before we mess it up
+        for node in self.nodeList[:]:
             if node.integerKey == value:
-                nodeExists = True
-
-            if nodeExists == True:
 
             #Check if existing node has any chilren
-                for node in self.nodeList:
-                    if node.leftChild is None and node.rightChild is None:
-                        #We want to delete this node
-                        #First remove it as the child of it's parent
-                        for item in self.nodeList:
-                            if item.leftChild == value:
+                if node.leftChild is None and node.rightChild is None:
+
+                #First remove it as the child of it's parent
+                    for item in self.nodeList:
+                        #Check left child
+                        if item.leftChild is not None:
+                            if item.leftChild.integerKey == value:
                                 item.leftChild = None
-                            if item.rightChild == value:
+                        #Check right child
+                        if item.rightChild is not None:
+                            if item.rightChild.integerKey == value:
                                 item.rightChild = None
-                        #Now delete the node from the list
-                            self.nodeList.pop()
+                    #Now delete the node from the list
+                    self.nodeList.remove(node)
+                    nodeExists = True
+                else:
+                    nodeExists = True
+                    hasChildren = True
+                    print("Node not deleted, has children")
 
-        if nodeExists == False:
+            else:
+                nodeExists = False
+
+        if nodeExists == False and hasChildren == False:
             print("Node not found")
-        '''
-
-
-
-        #Attempt 1
-        '''
-        #Look for nodes that have no children
-        for node in self.nodeList:
-            if node.leftChild == None and node.rightChild == None:
-
-                #If a node does not have children, re-loop through the list to find
-                for node in self.nodeList:
-                    if node.leftChild == value:
-                        node.leftChild = None
-                    if node.rightChild == value:
-                        node.rightChild == None
-                    self.nodeList.pop()
-        '''
-
 
 
     #PrintTree
@@ -191,34 +145,94 @@ class binaryTree():
 
             print("Node value:", item.integerKey, "Left Child:", self.leftValue, "Right Child:", self.rightValue, "Parent:", item.parent)
 
+#Graph
+
+class testGraph():
+
+    def __init__(self):
+        #Create dictionary to store key value pairs
+        self.graph = {}
+
+    def addVertex(self, value):
+        #Try to add a new node to the graph
+        #Check if value already exists in graph
+        if value in self.graph:
+            print("Vertex already exists")
+        #Add value to graph
+        #Each value has a list of adjacent nodes
+        else:
+            self.graph.update({value: []})
+
+    def addEdge(self, value1, value2):
+        #Adds an edge between values 1 and 2 unless one of them doesn't exist
+        if value1 and value2 in self.graph:
+            self.graph[value1].append(value2)
+            self.graph[value2].append(value1)
+        #If value1 or value2 is not found
+        else:
+            print("One or more vertices not found")
+
+    def findVertex(self, value):
+        #Searches for node with 'value' in graph, then prints adjacent node list if it finds it
+        #Check if value exists
+        if value in self.graph:
+            #Loop through keys
+            for boogers in self.graph.keys():
+                #If we find a key (node) that we're looking for
+                if boogers == value:
+                    #Print it, and then all of it's buddies
+                    print("Found vertex, displaying adjecent nodes")
+                    print(boogers, self.graph[boogers])
+        else:
+            print("Could not locate vertex of that value")
 
 
-#TESTING CODE
 
+################
+# TESTING CODE #
+################
 
 #TESTING THE QUEUE
+
+#Make a new queue
 print("Testing the queue")
 vegeta = iloveqs()
+
+#push()
+print("Adding 10 integers to the queue")
 vegeta.addItems()
+
+#pop()
+print("Removing 10 integers from the queue")
 vegeta.obliterateItems()
 
 
-
 #TESTING THE STACK
-print("Testing the stack, adding 10 integers")
+
+#Make a new stack
+print("Testing the stack")
 gooberDust = stack()
+
+#push()
+print("Adding 10 integers to the stack")
 for q in range(10):
     gooberDust.push(q)
 
+#pop()
 print("Popping items off stack")
 while gooberDust.checkSize() != 0:
     print(gooberDust.stackPop())
 
-#TESTING THE TREE
 
-print("Instantiating Binary Tree")
+#TESTING THE BINARY TREE
+
+#Make a new binary tree
+print("Testing the Binary Tree")
 testTree = binaryTree(50)
 
+#TEST ADDING NODES
+
+#Add nodes to the tree
 print("Adding 10 nodes to the tree")
 testTree.addNode(15, 50)
 testTree.addNode(30, 50)
@@ -230,39 +244,58 @@ testTree.addNode(99, 30)
 testTree.addNode(25, 20)
 testTree.addNode(666, 99)
 
-
 #Add a node that won't work because the parent value isn't there
+print("Try adding a node to a parent value that doesn't exist (100000)")
 testTree.addNode(1, 100000)
 
 #Add a node that won't work because the parent already has two children
+print("Try adding a node to a parent that already has two children")
 testTree.addNode(500, 15)
 testTree.printTree()
 
-#Unneeded print code
-'''
-for item in testTree.nodeList:
-    print(item.integerKey)
-'''
-
-#Delete a Node
+#TEST DELETING NODES
 
 #Try deleting a node that has children
-print("Trying to delete a node that has children")
+print("Trying to delete a node that has children (2)")
 testTree.deleteNode(2)
 
 #Try deleting a node that doens't exist
-print("Trying to delete a node that doesn't exist")
+print("Trying to delete a node that doesn't exist (99999999999)")
 testTree.deleteNode(99999999999)
 
 #Delete 2 nodes
-print("Removing 2 nodes from the tree")
+print("Removing 2 nodes from the tree (666, 25)")
 testTree.deleteNode(666)
+testTree.deleteNode(25)
 
-print("Printing tree again")
+#Print tree once more now that nodes have been deleted
+print("Printing tree again after node removal")
 testTree.printTree()
 
+#TESTING THE GRAPH
 
+#Make a new graph
+excelsior = testGraph()
+intList = []
 
-#print("Printing Tree")
+#Add 10 integers as vertices to the graph
+print("Add 10 vertexes to the graph")
+for pig in range(10):
+    print ("Adding", pig, "vertex to graph")
+    intList.append(pig)
+    excelsior.addVertex(pig)
 
-#add 10 integers as nodes to the tree
+#Add a bunch of edges
+print("Adding 20 random edges to graph")
+for chicken in range(20):
+    nodeOne = random.choice(intList)
+    nodeTwo = random.choice(intList)
+    excelsior.addEdge(nodeOne, nodeTwo)
+    print(excelsior.graph)
+
+#Find some vertices
+print("Finding 5 vertices")
+for cow in range(5):
+    nodes = random.choice(intList)
+    #print("Looking for node", nodes, "in graph and displaying adjacent nodes")
+    excelsior.findVertex(nodes)
